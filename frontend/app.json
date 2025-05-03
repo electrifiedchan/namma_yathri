@@ -1,0 +1,51 @@
+ {
+  "expo": {
+    "name": "Namma Yatri Driver",
+    "slug": "namma-yatri-driver",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/namma-yatri-icon.png",
+    "scheme": "nammayatri",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/namma-yatri-splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#121212"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nammayatri.driver",
+      "config": {
+        "googleMapsApiKey": "YOUR_IOS_GOOGLE_MAPS_API_KEY"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/namma-yatri-adaptive-icon.png",
+        "backgroundColor": "#121212"
+      },
+      "package": "com.nammayatri.driver",
+      "config": {
+        "googleMaps": {
+          "apiKey": "YOUR_ANDROID_GOOGLE_MAPS_API_KEY"
+        }
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/namma-yatri-favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-splash-screen"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
