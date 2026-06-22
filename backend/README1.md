@@ -256,94 +256,182 @@ for word in words_to_print:
 ---
 
 ## 💻 Program 3
-**Source: `AImanual.html`** *(no standalone `.ipynb` was uploaded for this program)*
+**Source: `pgrm3.ipynb`**
+
+### Part 1 — Basic Legal Corpus Training
 
 <table><tr><td>🔹 Cell 1</td></tr></table>
+
+```bash
+!pip install gensim
+```
+
+<table><tr><td>🔹 Cell 2</td></tr></table>
 
 ```python
 from gensim.models import Word2Vec
 from gensim.utils import simple_preprocess
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
-
-enhanced_corpus = [
-    "The court ordered the immediate release of the detained individual due to lack of evidence.",
-    "A new amendment was introduced to ensure the protection of intellectual property rights.",
-    "The defendant pleaded not guilty, citing an alibi supported by credible witnesses.",
-    "The plaintiff accused the company of violating environmental regulations.",
-    "A settlement agreement was reached through arbitration, avoiding a lengthy trial.",
-    "The legal team presented a compelling argument to overturn the previous judgment.",
-    "Contractual obligations must be fulfilled unless waived by mutual consent.",
-    "The jury found the accused guilty of fraud and embezzlement.",
-    "The appeal was dismissed as the evidence presented was deemed inadmissible.",
-    "The attorney emphasized the importance of adhering to constitutional rights.",
-    "The patient was admitted to the emergency department with severe chest pain.",
-    "The surgeon successfully performed a minimally invasive procedure to remove the tumor.",
-    "Clinical trials showed significant improvement in patients treated with the experimental drug.",
-    "Regular screening is essential for early detection of chronic illnesses such as diabetes.",
-    "The doctor recommended physical therapy to improve mobility after surgery.",
-    "The hospital implemented stringent protocols to prevent the spread of infectious diseases.",
-    "The nurse monitored the patient's vital signs hourly to ensure stability.",
-    "Vaccination campaigns have drastically reduced the prevalence of polio worldwide.",
-    "The radiologist identified a small abnormality in the CT scan requiring further investigation.",
-    "Proper nutrition and exercise are vital components of a healthy lifestyle."
-]
-
-tokenized_corpus = [simple_preprocess(sentence) for sentence in enhanced_corpus]
-print(tokenized_corpus[:2])
-```
-
-<table><tr><td>🔹 Cell 2</td></tr></table>
-
-```python
-domain_word2vec = Word2Vec(
-    sentences=tokenized_corpus,
-    vector_size=100,
-    window=5,
-    min_count=1,
-    sg=1,
-    epochs=150
-)
-
-domain_word2vec.save("enhanced_domain_word2vec.model")
-
-words_to_analyze = ["court", "plaintiff", "doctor", "patient", "guilty", "surgery"]
-for word in words_to_analyze:
-    if word in domain_word2vec.wv:
-        print(f"Vector embedding for '{word}':\n{domain_word2vec.wv[word][:10]}... (truncated)\n")
-    else:
-        print(f"Word '{word}' not found in the Word2Vec model.")
 ```
 
 <table><tr><td>🔹 Cell 3</td></tr></table>
 
 ```python
-selected_words = ["court", "plaintiff", "defendant", "guilty", "jury",
-                  "patient", "doctor", "hospital", "surgery", "emergency"]
-word_vectors = [domain_word2vec.wv[word] for word in selected_words]
+legal_corpus = [
+    "The court ruled in favour of the plaintiff.",
+    "The defendant was found guilty of negligence.",
+    "A breach of contract case was filed.",
+    "The agreement between parties must be honored.",
+    "Legal documents must be drafted carefully.",
+    "The jury deliberated for several hours.",
+    "A settlement was reached between the parties.",
+    "The plaintiff claimed damages for losses incurred.",
+    "The contract outlined the obligations of both parties."
+]
 
-pca = PCA(n_components=2)
-reduced_vectors = pca.fit_transform(word_vectors)
-
-plt.figure(figsize=(10, 8))
-for i, word in enumerate(selected_words):
-    plt.scatter(reduced_vectors[i, 0], reduced_vectors[i, 1])
-    plt.text(reduced_vectors[i, 0] + 0.002, reduced_vectors[i, 1], word, fontsize=12)
-
-plt.title("PCA Visualization of Legal and Medical Word Embeddings")
-plt.xlabel("PCA Dimension 1")
-plt.ylabel("PCA Dimension 2")
-plt.show()
+tokenized_corpus = [simple_preprocess(sentence) for sentence in legal_corpus]
 ```
 
 <table><tr><td>🔹 Cell 4</td></tr></table>
 
 ```python
-similar_words = domain_word2vec.wv.most_similar("court", topn=5)
-print(f"Words similar to 'court': {similar_words}")
+legal_word2vec = Word2Vec(
+    sentences=tokenized_corpus,
+    vector_size=50,
+    window=3,
+    min_count=1,
+    sg=1,
+    epochs=100
+)
+
+legal_word2vec.save("legal-word2vec.model")
 ```
 
-> ⚠️ This program's corpus has **20 sentences** (10 legal + 10 medical) — noticeably larger than what appeared in an earlier draft of this manual.
+<table><tr><td>🔹 Cell 5</td></tr></table>
+
+```python
+word = "lawyer"
+if word in legal_word2vec.wv:
+    print(f"Vector embedding for {word}: \n {legal_word2vec.wv[word]}\n")
+else:
+    print(f"Word '{word}' not found in the word2vec model")
+```
+
+<table><tr><td>🔹 Cell 6</td></tr></table>
+
+```python
+words_to_visualize = ["court", "plaintiff", "defendant", "agreement", "lawyer", "evidence", "contract", "settlement", "jury"]
+
+valid_words = [w for w in words_to_visualize if w in legal_word2vec.wv]
+word_vectors = [legal_word2vec.wv[word] for word in valid_words]
+
+pca = PCA(n_components=2)
+reduced_vectors = pca.fit_transform(word_vectors)
+
+plt.figure(figsize=(10, 8))
+for i, word in enumerate(valid_words):
+    plt.scatter(reduced_vectors[i, 0], reduced_vectors[i, 1])
+    plt.text(reduced_vectors[i, 0] + 0.002, reduced_vectors[i, 1], word, fontsize=12)
+
+plt.title("PCA visualization of legal word Embeddings")
+plt.xlabel("PCA Dimension 1")
+plt.ylabel("PCA Dimension 2")
+plt.show()
+```
+
+<table><tr><td>🔹 Cell 7</td></tr></table>
+
+```python
+if "lawyer" in legal_word2vec.wv:
+    similar_words = legal_word2vec.wv.most_similar("lawyer", topn=5)
+    print(f"Words similar to lawyer: {similar_words}")
+```
+
+### Part 2 — Enhanced Legal & Medical Corpus
+
+<table><tr><td>🔹 Cell 8</td></tr></table>
+
+```python
+enhanced_corpus = [
+    # Legal domain
+    "The court dismissed the case due to lacking evidence.",
+    "An amendment protected intellectual property rights.",
+    "The defendant pleaded not guilty with a credible alibi.",
+    "The plaintiff alleged the company violated environmental rules.",
+    "Arbitration reached a settlement avoiding a trial.",
+    "The legal team argued to overturn the judgment.",
+    "Contracts must be fulfilled unless mutually waived.",
+    "The jury found the accused guilty of fraud.",
+    "The appeal was dismissed due to inadmissible evidence.",
+    "The attorney emphasized adhering to the constitution.",
+
+    # Medical domain
+    "The patient entered the ER with chest pain.",
+    "The surgeon successfully removed the tumor.",
+    "Clinical trials proved the experimental drug works.",
+    "Screening helps detect chronic illness early.",
+    "The doctor recommended physical therapy after surgery.",
+    "The hospital started protocols to stop infections.",
+    "The nurse checked patient vitals hourly.",
+    "Vaccines have drastically reduced global polio.",
+    "The radiologist found a CT scan abnormality.",
+    "Nutrition and exercise vital for health."
+]
+
+tokenized_corpus_enhanced = [simple_preprocess(sentence) for sentence in enhanced_corpus]
+```
+
+<table><tr><td>🔹 Cell 9</td></tr></table>
+
+```python
+domain_word2vec = Word2Vec(
+    sentences=tokenized_corpus_enhanced,
+    vector_size=100,
+    window=5,
+    min_count=2,
+    sg=1,
+    epochs=100
+)
+
+domain_word2vec.save("enhanced-domain-word2vec.model")
+```
+
+<table><tr><td>🔹 Cell 10</td></tr></table>
+
+```python
+words_to_analyze = ["court", "plaintiff", "doctor", "patient", "guilty", "surgery"]
+for word in words_to_analyze:
+    if word in domain_word2vec.wv:
+        print(f"Vector embedding for '{word}': \n{domain_word2vec.wv[word]}\n")
+    else:
+        print(f"Word '{word}' not found in the word2vec model.")
+```
+
+<table><tr><td>🔹 Cell 11</td></tr></table>
+
+```python
+selected_words = ["court", "plaintiff", "defendant", "guilty", "jury",
+                  "patient", "doctor", "hospital", "surgery", "emergency"]
+
+valid_selected_words = [w for w in selected_words if w in domain_word2vec.wv]
+word_vectors_domain = [domain_word2vec.wv[word] for word in valid_selected_words]
+
+pca_domain = PCA(n_components=2)
+reduced_vectors_domain = pca_domain.fit_transform(word_vectors_domain)
+
+plt.figure(figsize=(12, 8))
+for i, word in enumerate(valid_selected_words):
+    plt.scatter(reduced_vectors_domain[i, 0], reduced_vectors_domain[i, 1])
+    plt.text(reduced_vectors_domain[i, 0] + 0.005, reduced_vectors_domain[i, 1], word, fontsize=12)
+
+plt.title("PCA visualization of legal & Medical word Embeddings")
+plt.xlabel("PCA Dimension 1")
+plt.ylabel("PCA Dimension 2")
+plt.show()
+```
+
+> ⚠️ `min_count=2` in Cell 9 means words appearing only once (e.g. `"radiologist"`) will be silently skipped during training — the `valid_selected_words` safety check in Cell 11 guards against a `KeyError` at visualization time.
 
 ---
 ---
