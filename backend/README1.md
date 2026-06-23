@@ -161,16 +161,7 @@ print(f"Distance (100d) between {w1} and {w2} : {d100_d : .4f}")
 pip install gensim
 ```
 
-<table><tr><td>🔹 Cell 2</td></tr></table>
-
-```python
-from gensim.models import Word2Vec
-from gensim.utils import simple_preprocess
-from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
-```
-
-<table><tr><td>🔹 Cell 3</td></tr></table>
+<table><tr><td>🔹 Cell 4</td></tr></table>
 
 ```python
 import numpy as np
@@ -180,20 +171,20 @@ from sklearn.manifold import TSNE
 from gensim.models import keyedvectors
 ```
 
-<table><tr><td>🔹 Cell 4</td></tr></table>
+<table><tr><td>🔹 Cell 5</td></tr></table>
 
 ```python
 m100d = keyedvectors.load_word2vec_format('/content/drive/MyDrive/Colab Notebooks/glove.6B.100d.word2vec.txt',binary = False)
 ```
 
-<table><tr><td>🔹 Cell 5</td></tr></table>
+<table><tr><td>🔹 Cell 6</td></tr></table>
 
 ```python
 words = ['body', 'brain', 'foot', 'hand', 'liver']
 word_vector = np.array([m100d[word]for word in words])
 ```
 
-<table><tr><td>🔹 Cell 6</td></tr></table>
+<table><tr><td>🔹 Cell 7</td></tr></table>
 
 ```python
 from sklearn.preprocessing import StandardScaler
@@ -205,7 +196,7 @@ pca = PCA(n_components=2)
 pca_result = pca.fit_transform(word_vector_scaled)
 ```
 
-<table><tr><td>🔹 Cell 7</td></tr></table>
+<table><tr><td>🔹 Cell 8</td></tr></table>
 
 ```python
 plt.figure(figsize = (10,8))
@@ -218,7 +209,7 @@ plt.ylabel("PCA Dimension 2")
 plt.show()
 ```
 
-<table><tr><td>🔹 Cell 8</td></tr></table>
+<table><tr><td>🔹 Cell 9</td></tr></table>
 
 ```python
 def get_similar_words(Word,model,topn = 5):
@@ -226,7 +217,7 @@ def get_similar_words(Word,model,topn = 5):
   return sim_words
 ```
 
-<table><tr><td>🔹 Cell 9</td></tr></table>
+<table><tr><td>🔹 Cell 10</td></tr></table>
 
 ```python
 a = "blood"
@@ -234,13 +225,13 @@ sim_word = get_similar_words(a, m100d, topn=5)
 print(f"Words similar to {a}: {sim_word}")
 ```
 
-<table><tr><td>🔹 Cell 10</td></tr></table>
+<table><tr><td>🔹 Cell 11</td></tr></table>
 
 ```python
 words_to_print = ['blood', 'plant']
 ```
 
-<table><tr><td>🔹 Cell 11</td></tr></table>
+<table><tr><td>🔹 Cell 12</td></tr></table>
 
 ```python
 for word in words_to_print:
